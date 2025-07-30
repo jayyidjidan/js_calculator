@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Calculator</title>
+    <link rel="stylesheet" href="src/output.css">
+    <script>
+        // Function to handle button click events
+        document.addEventListener("DOMContentLoaded", () => {
+            const display = document.getElementById("display");
+            const buttons = document.querySelectorAll(".btn");
+            let currentInput = "";
+            let operator = null;
+            let previousInput = "";
+            let resultShown = false; // Variable to track if result is shown
+
+            // Handle button clicks
+            buttons.forEach(button => {
+                button.addEventListener("click", (e) => {
+                    const value = e.target.dataset.value;
+
+                    // If the result is shown, handle operator or number click
+                    if (resultShown) {
+                        if (value === "AC") {
+                            // Reset the display when AC is pressed after result
+                            currentInput = "";
+                            resultShown = false;
+                            display.value = "";
+                        } else if (value === "=") {
+                            // Do nothing, as "=" is already pressed and result is shown
+                            return;
+                        } else if (isNaN(value)) {
+                            // If an operator is clicked, use the result for the operation
+                            currentInput = display.value + value;
+                            resultShown = false;
+                            display.value = currentInput;
+                        } else {
+                            // If a number is clicked after result, start fresh with that number
+                            currentInput = value;
+                            resultShown = false;
+                            display.value = currentInput;
+                        }
+                        return;
+                    }
+
+                    if (value === "AC") {
+                        // Reset the display
+                        currentInput = "";
+                        previousInput = "";
+                        operator = null;
+                        resultShown = false;
+                        display.value = "";
+                    } else if (value === "=") {
+                        // Perform the calculation
+                        try {
+                            currentInput = eval(currentInput).toString();
+                            display.value = currentInput;
+                            resultShown = true; // Mark result as shown
+                        } catch (error) {
+                            display.value = "Error";
+                            resultShown = false;
+                        }
+                    } else {
+                        // Add value to current input or operator
+                        if (value === "%" && currentInput) {
+                            currentInput = (parseFloat(currentInput) / 100).toString();
+                        } else {
+                            currentInput += value;
+                        }
+                        display.value = currentInput;
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<section class="w-full h-screen flex flex-col justify-center items-center">
+    <h1 class="text-4xl font-bold pb-5">JS Calculator</h1>
+    <div class="bg-yellow-100 w-80 rounded-lg border-4 border-black grid grid-cols-4 grid-rows-6 gap-2 p-4">
+        <input type="text" class="col-span-4 row-span-1 border-4 border-black bg-white rounded-lg min-h-[50px] p-4" id="display" readonly>
+        <button class="btn border-4 border-black bg-red-100 rounded-lg min-h-[50px] col-span-2" id="reset" data-value="AC">AC</button>
+        <button class="btn border-4 border-black bg-green-100 rounded-lg min-h-[50px] col-span-2" data-value="=">=</button>
+        <button class="btn border-4 border-black bg-white rounded-lg min-h-[50px]" data-value="7">7</button>
+        <button class="btn border-4 border-black bg-white rounded-lg min-h-[50px]" data-value="8">8</button>
+        <button class="btn border-4 border-black bg-white rounded-lg min-h-[50px]" data-value="9">9</button>
+        <button class="btn border-4 border-black bg-green-100 rounded-lg min-h-[50px]" data-value="+">+</button>
+        <button class="btn border-4 border-black bg-white rounded-lg min-h-[50px]" data-value="4">4</button>
+        <button class="btn border-4 border-black bg-white rounded-lg min-h-[50px]" data-value="5">5</button>
+        <button class="btn border-4 border-black bg-white rounded-lg min-h-[50px]" data-value="6">6</button>
+        <button class="btn border-4 border-black bg-green-100 rounded-lg min-h-[50px]" data-value="-">-</button>
+        <button class="btn border-4 border-black bg-white rounded-lg min-h-[50px]" data-value="1">1</button>
+        <button class="btn border-4 border-black bg-white rounded-lg min-h-[50px]" data-value="2">2</button>
+        <button class="btn border-4 border-black bg-white rounded-lg min-h-[50px]" data-value="3">3</button>
+        <button class="btn border-4 border-black bg-green-100 rounded-lg min-h-[50px]" data-value="*">x</button>
+        <button class="btn border-4 border-black bg-white rounded-lg min-h-[50px]" data-value="0">0</button>
+        <button class="btn border-4 border-black bg-white rounded-lg min-h-[50px]" data-value=".">.</button>
+        <button class="btn border-4 border-black bg-green-100 rounded-lg min-h-[50px]" data-value="%">%</button>
+        <button class="btn border-4 border-black bg-green-100 rounded-lg min-h-[50px]" data-value="/">/</button>
+    </div>
+</section>
+</body>
+</html>
